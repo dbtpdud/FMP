@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmp.demo.repository.interfaces.MatchRepository">
+
+  <!--
+    1. 매칭 가능한 사용자 후보 조회
+       - SQL에서는 단순히 같은 학년·학과인 모든 사용자 ID를 반환합니다.
+       - 서비스에서 본인 ID를 지워서 후보 목록을 완성합니다.
+  -->
+  <select id="findAvailableUserIds"
+          resultType="string"
+          parameterType="map">
+    SELECT u.student_id
+      FROM users u
+     WHERE u.school_year = #{schoolYear}
+       AND u.major       = #{major}
+  </select>
+
+  <!-- 2. 매칭 생성 -->
+  <insert id="createMatch"
+          parameterType="com.fmp.demo.dto.MatchDTO"
+          useGeneratedKeys="true"
+          keyProperty="matchId">
+    INSERT INTO matches
+      (user1_id, user2_id, school_year, major, status)
+    VALUES
+      (#{user1Id}, #{user2Id}, #{schoolYear}, #{major}, #{status})
+  </insert>
+
+  <!-- 3. 단건 조회 -->
+  <select id="getMatchById"
+          resultType="com.fmp.demo.dto.MatchDTO"
+          parameterType="long">
+    SELECT *
+      FROM matches
+     WHERE match_id = #{matchId}
+  </select>
+
+  <!-- 4. 내 매칭 전체 조회 -->
+  <select id="getMatchesByUserId"
+          resultType="com.fmp.demo.dto.MatchDTO"
+          parameterType="string">
+    SELECT *
+      FROM matches
+     WHERE user1_id = #{userId}
+        OR user2_id = #{userId}
+     ORDER BY created_at DESC
+  </select>
+
+  <!-- 5. 매칭 상태 변경 -->
+  <update id="updateMatchStatus"
+          parameterType="map">
+    UPDATE matches
+       SET status = #{status}
+     WHERE match_id = #{matchId}
+  </update>
+
+  <!-- 6. 매칭 삭제 -->
+  <delete id="deleteMatch"
+          parameterType="long">
+    DELETE FROM matches
+     WHERE match_id = #{matchId}
+  </delete>
+
+</mapper>

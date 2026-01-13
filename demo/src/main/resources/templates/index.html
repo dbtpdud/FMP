@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>DSU 랜덤 매칭 프로그램</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    integrity="sha512-VI1ZJGz70ZlGznjI9VXvXbldbfGJ5IG+o1hDH3Telo9hkqxZkfNChs5HgKFtZpYKo55zS/aMZ4YMpMm3G8XWZg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"
+  />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <style>
+    /* 전체 배경 그라데이션 + particles.js 위치 */
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      position: relative;
+      overflow-x: hidden;
+    }
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    nav {
+      z-index: 10;
+    }
+    .hero {
+      position: relative;
+      z-index: 10;
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 8px rgba(0,0,0,0.3);
+    }
+    .btn-match {
+      font-size: 1.25rem;
+      padding: .75rem 2rem;
+      border-radius: 50px;
+      box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
+      transition: transform .2s;
+    }
+    .btn-match:hover {
+      transform: scale(1.05);
+    }
+    footer {
+      position: relative;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- particles.js 배경 -->
+  <div id="particles-js"></div>
+
+  <!-- 네비게이션 -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-transparent py-3">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-3 animate__animated animate__fadeInDown" href="#" data-aos="fade-down">
+         F∙M∙P School Matcher
+      </a>
+    </div>
+  </nav>
+
+  <!-- 히어로 섹션 -->
+  <section class="hero">
+    <div data-aos="zoom-in" data-aos-duration="1000">
+      <h1 class="animate__animated animate__fadeInUp">DSU 랜덤 매칭 프로그램</h1>
+      <p class="animate__animated animate__fadeInUp animate__delay-1s">
+        한 번의 클릭으로 새로운 친구를 만나보세요!❤️
+      </p>
+      <!-- th:href="@{/match}"  -->
+      <a href="/login"
+   class="btn btn-light btn-match animate__animated animate__pulse animate__infinite animate__slow"
+   data-aos="fade-up" data-aos-delay="500">
+  매칭 시작 🚀
+</a>
+    </div>
+  </section>
+
+  <!-- 푸터 -->
+  <footer class="footer mt-auto py-4">
+    <div class="container text-center text-white-50" data-aos="fade-up" data-aos-delay="800">
+      <small>© 2025 DSU School Matcher.</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- particles.js -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <!-- AOS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+    // particles.js 설정
+    particlesJS.load('particles-js', 'https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/assets/particles.json', function() {
+      console.log('particles.js loaded');
+    });
+    // AOS 초기화
+    AOS.init();
+  </script>
+  <!-- ✅ 브라우저 알림 -->
+  <script>
+    if ("Notification" in window) {
+      Notification.requestPermission().then(function(permission) {
+        if (permission === "granted") {
+          new Notification("🎉 환영합니다!", {
+            body: "DSU 랜덤 매칭 프로그램에 오신 걸 환영해요!\n 로그인하고 새로운 친구를 만나요!",
+            icon: "https://cdn-icons-png.flaticon.com/512/727/727399.png"
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+  <!-- Bootstrap 5  -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .form-box {
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      padding: 2rem;
+      max-width: 400px;
+      margin: 10vh auto;
+    }
+    .form-title {
+      text-align: center;
+      color: #667eea;
+      font-weight: bold;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-purple {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      width: 100%;
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-radius: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-box">
+    <div class="form-title">회원가입</div>
+    <form action="/signup" method="post">
+      <div class="mb-3">
+        <label for="userId" class="form-label">아이디</label>
+        <input type="text" id="userId" name="userId" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">비밀번호</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="name" class="form-label">이름</label>
+        <input type="text" id="name" name="name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="birth" class="form-label">생년월일</label>
+        <input type="date" id="birth" name="birth" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="phone" class="form-label">전화번호</label>
+        <input type="text" id="phone" name="phone" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="gender" class="form-label">성별</label>
+        <select id="gender" name="gender" class="form-select" required>
+          <option value="">성별을 선택하세요</option>
+          <option value="M">남자</option>
+          <option value="F">여자</option>
+        </select>
+      </div>
+
+      <!-- 학부 선택 -->
+      <div class="mb-3">
+        <label for="department" class="form-label">학부</label>
+        <select id="department" name="department" class="form-select" required>
+          <option value="">학부를 선택하세요</option>
+          <option value="입체영화예술대학">입체영화예술대학</option>
+          <option value="디자인대학">디자인대학</option>
+          <option value="미디어콘텐츠대학">미디어콘텐츠대학</option>
+          <option value="소프트웨어융합대학">소프트웨어융합대학</option>
+          <option value="글로벌관광대학">글로벌관광대학</option>
+          <option value="바이오헬스융합대학">바이오헬스융합대학</option>
+          <option value="미래기술대학">미래기술대학</option>
+          <option value="경영사회과학대학">경영사회과학대학</option>
+          <option value="민선교양대학">민선교양대학</option>
+        </select>
+      </div>
+
+      <!-- 학과 선택 -->
+      <div class="mb-3">
+        <label for="major" class="form-label">학과</label>
+        <select id="major" name="major" class="form-select" required>
+          <option value="">학과를 선택하세요</option>
+          <optgroup label="입체영화예술대학">
+            <option value="영화학과">영화학과</option>
+            <option value="뮤지컬연기전공">뮤지컬연기전공</option>
+            <option value="디지털영상디자인학과">디지털영상디자인학과</option>
+            <option value="연기전공">연기전공</option>
+          </optgroup>
+          <optgroup label="디자인대학">
+            <option value="시각디자인학과">시각디자인학과</option>
+            <option value="패션디자인학과">패션디자인학과</option>
+            <option value="공간환경디자인학과">공간환경디자인학과</option>
+          </optgroup>
+          <optgroup label="미디어콘텐츠대학">
+            <option value="방송영상학과">방송영상학과</option>
+            <option value="게임학과">게임학과</option>
+            <option value="영상애니메이션학과">영상애니메이션학과</option>
+            <option value="웹툰학과">웹툰학과</option>
+          </optgroup>
+          <optgroup label="소프트웨어융합대학">
+            <option value="디지털융합공학과">디지털융합공학과</option>
+            <option value="소프트웨어학과">소프트웨어학과</option>
+            <option value="정보보안학과">정보보안학과</option>
+            <option value="컴퓨터공학과">컴퓨터공학과</option>
+            <option value="스마트모빌리티학과">스마트모빌리티학과(신설)</option>
+            <option value="건축공학과">건축공학과</option>
+          </optgroup>
+          <optgroup label="글로벌관광대학">
+            <option value="호텔경영학과">호텔경영학과</option>
+            <option value="글로벌관광학과">글로벌관광학과</option>
+            <option value="스포츠재활학과">스포츠재활학과</option>
+            <option value="축구학과">축구학과</option>
+          </optgroup>
+          <optgroup label="바이오헬스융합대학">
+            <option value="보건행정학과">보건행정학과</option>
+            <option value="임상병리학과">임상병리학과</option>
+            <option value="간호학과">간호학과</option>
+            <option value="치위생학과">치위생학과</option>
+            <option value="방사선학과">방사선학과</option>
+            <option value="작업치료학과">작업치료학과</option>
+            <option value="재활운동학과">재활운동학과</option>
+            <option value="체육학과">체육학과</option>
+            <option value="식품영양학과">식품영양학과</option>
+          </optgroup>
+          <optgroup label="미래기술대학">
+            <option value="ICT융합공학과">ICT융합공학과</option>
+            <option value="안전관리공학과">안전관리공학과</option>
+            <option value="사회복지상담학과">사회복지상담학과</option>
+            <option value="스포츠레저학과">스포츠레저학과</option>
+            <option value="신호운동처방학과">신호운동처방학과</option>
+            <option value="스포츠재활치료학과">스포츠재활치료학과</option>
+            <option value="스포츠과학과">스포츠과학과</option>
+            <option value="스포츠융합학과">스포츠융합학과</option>
+            <option value="창작학과">창작학과</option>
+          </optgroup>
+          <optgroup label="경영사회과학대학">
+            <option value="경영학과">경영학과</option>
+            <option value="경제금융학과">경제금융학과</option>
+            <option value="국제통상학과">국제통상학과</option>
+            <option value="사회복지학과">사회복지학과</option>
+            <option value="부동산학과">부동산학과</option>
+          </optgroup>
+          <optgroup label="민선교양대학">
+            <option value="자유전공학부">자유전공학부(신설)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="schoolYear" class="form-label">학년</label>
+        <input type="number" id="schoolYear" name="schoolYear" min="1" max="5" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="studentId" class="form-label">학번</label>
+        <input type="text" id="studentId" name="studentId" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-purple">가입하기</button>
+    </form>
+  </div>
+
+</body>
+</html>

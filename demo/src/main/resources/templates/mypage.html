@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마이페이지</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Pretendard', 'Montserrat', sans-serif;
+      background: linear-gradient(120deg, #fbefff 0%, #ffe3e6 100%);
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .mypage-container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 5rem 1rem 2rem 1rem;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #b56edc;
+      text-decoration: none;
+      padding: 1.2rem;
+      display: inline-block;
+      position: relative;
+      z-index: 3;
+    }
+
+    .mypage-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #b56edc;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .mypage-card {
+      width: 540px;
+      max-width: 540px;
+      min-width: 540px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(5px);
+      border-radius: 1.6rem;
+      padding: 2.2rem 2rem;
+      box-shadow: 0 6px 28px rgba(212, 163, 238, 0.12);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #ae63be;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .form-control {
+      border-radius: 0.9rem;
+      border: 1.5px solid #efe6f7;
+      padding: 0.7rem 1rem;
+      background: #faf6fd;
+      font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .btn-action {
+      flex: 1 1 30%;
+      font-weight: 600;
+      border-radius: 1.6rem;
+      padding: 0.55rem 0.6rem;
+      background: linear-gradient(90deg, #ffb6b9 0%, #b56edc 100%);
+      border: none;
+      color: white;
+      text-align: center;
+      vertical-align: middle;
+      display: inline-block;
+      font-size: 0.9rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-action:hover {
+      background: linear-gradient(90deg, #b56edc 0%, #ffb6b9 100%);
+      transform: scale(1.04);
+      box-shadow: 0 6px 20px rgba(181, 110, 220, 0.3);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.6rem;
+      background: rgba(255,255,255,0.98);
+      border: 1.5px solid #ece5fa;
+      color: #b56edc;
+      font-weight: 600;
+      padding: 0.55rem 1rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      z-index: 100;
+      font-size: 0.95rem;
+    }
+
+    .back-btn:hover {
+      background: #fbefff;
+      color: #ff95c6;
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <a href="/" class="navbar-brand">F∙M∙P School Matcher</a>
+  <a th:href="@{/match}" class="back-btn">← 되돌아가기</a>
+  <div class="mypage-container">
+    <h1 class="mypage-title">마이페이지</h1>
+
+    <!-- 로그인한 사용자일 때만 보이는 카드 -->
+    <div class="mypage-card"
+         data-aos="fade-up"
+         data-aos-duration="1200"
+         data-aos-easing="ease-in-out"
+         th:if="${user != null}">
+      <form th:action="@{/mypage/update}" method="post">
+        <label class="form-label">학번</label>
+        <input type="text" class="form-control" th:value="${user.studentId}" readonly />
+
+        <label class="form-label">아이디</label>
+        <input type="text" class="form-control" th:value="${user.userId}" readonly />
+
+        <label class="form-label">이름</label>
+        <input type="text" class="form-control" th:value="${user.name}" readonly />
+
+        <label class="form-label">성별</label>
+        <input type="text" class="form-control" th:value="${user.gender}" readonly />
+
+        <label class="form-label">전화번호</label>
+        <input type="text" name="phone" class="form-control" th:value="${user.phone}" />
+
+        <label class="form-label">학과</label>
+        <input type="text" name="department" class="form-control" th:value="${user.department}" />
+
+        <div class="btn-group">
+          <button type="submit" class="btn-action">정보 수정</button>
+          <a href="/mypage/logout" class="btn-action text-center">로그아웃</a>
+          <a href="/mypage/delete" onclick="return confirm('정말 탈퇴하시겠습니까?')" class="btn-action text-center">회원 탈퇴</a>
+        </div>
+      </form>
+    </div>
+  </div> <!-- ✅ 닫는 .mypage-container -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    document.addEventListener("DOMContentLoaded", function () {
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 28, density: { enable: true, value_area: 700 } },
+          color: { value: ["#d4a3ee", "#ffb6b9", "#b56edc"] },
+          shape: {
+            type: "circle",
+            stroke: { width: 0, color: "#ffffff" },
+            polygon: { nb_sides: 5 }
+          },
+          opacity: {
+            value: 0.3,
+            random: true,
+            anim: { enable: true, speed: 0.6, opacity_min: 0.1, sync: false }
+          },
+          size: {
+            value: 20,
+            random: true,
+            anim: { enable: false, speed: 10, size_min: 5, sync: false }
+          },
+          line_linked: { enable: false },
+          move: {
+            enable: true,
+            speed: 1.2,
+            direction: "top",
+            random: false,
+            straight: false,
+            out_mode: "out",
+            bounce: false
+          }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: false },
+            onclick: { enable: false },
+            resize: true
+          }
+        },
+        retina_detect: true
+      });
+    });
+  </script>
+</body>
+</html>

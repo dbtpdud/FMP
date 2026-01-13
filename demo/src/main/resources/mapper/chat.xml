@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fmp.demo.repository.interfaces.ChatsRepository">
+
+    
+    <!-- 저장 -->
+    <insert id="insertChatMessage" parameterType="com.fmp.demo.repository.model.Chats">
+        INSERT INTO chats (sender_id, receiver_id, message)
+        VALUES (#{senderId}, #{receiverId}, #{message})
+    </insert>
+
+    <!-- 조회 (두 유저의 대화 전체 불러오기) -->
+    <select id="selectChatMessages" resultType="com.fmp.demo.repository.model.Chats">
+        SELECT * FROM chats
+        WHERE (sender_id = #{userId1} AND receiver_id = #{userId2})
+           OR (sender_id = #{userId2} AND receiver_id = #{userId1})
+        ORDER BY timestamp ASC
+    </select>
+
+    <!-- 삭제 (두 유저 사이의 전체 대화 삭제) -->
+    <delete id="deleteChatMessages">
+        DELETE FROM chats
+        WHERE (sender_id = #{userId1} AND receiver_id = #{userId2})
+           OR (sender_id = #{userId2} AND receiver_id = #{userId1})
+    </delete>
+    
+</mapper>

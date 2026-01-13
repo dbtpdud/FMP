@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fmp.demo.repository.interfaces.UserRepository">
+    <!-- SQL문을 여기에 작성하세요 -->
+    
+    
+ <!-- 로그인 (로그인 기능, 아이디-비밀번호 찾기) -->   
+ 
+ <!-- 1. 로그인 (아이디+비밀번호 모두 일치) -->
+    <select id="findByUserIdAndPassword" resultType="com.fmp.demo.repository.model.User">
+        SELECT *
+        FROM users
+        WHERE user_id = #{userId}
+        AND password = #{password}
+        AND is_deleted = FALSE
+        LIMIT 1
+    </select>
+    
+  <!-- 회원가입(insert만 하기 (생성 -> 회원가입할 때 사용자 생성? 이런 느낌)) -->
+    <insert id="insertUser" parameterType="com.fmp.demo.repository.model.User">
+  INSERT INTO users (
+    student_id,
+    department,
+    school_year,
+    major,
+    gender,
+    name,
+    profile_image,
+    phone,
+    user_id,
+    password
+  ) VALUES (
+    #{studentId},
+    #{department},
+    #{schoolYear},
+    #{major},
+    #{gender},
+    #{name},
+    #{profileImage},
+    #{phone},
+    #{userId},
+    #{password}
+  );
+</insert>
+
+    
+</mapper>

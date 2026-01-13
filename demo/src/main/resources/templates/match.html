@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>AI 매칭 조건 선택 | DSU School Matcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pretendard:wght@400;600;800&display=swap');
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(120deg, #fbefff 0%, #ffe3e6 100%);
+    }
+    body {
+      font-family: 'Pretendard', 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      left: 0; top: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .match-card {
+      background: rgba(255,255,255,0.96);
+      border-radius: 2.3rem;
+      box-shadow: 0 8px 40px 0 rgba(212, 163, 238, 0.14), 0 2px 12px rgba(255, 180, 196, 0.08);
+      padding: 3.3rem 3rem 2.3rem 3rem;
+      min-width: 420px;
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      border: none;
+      z-index: 2;
+      animation: fadeInUp 1.2s cubic-bezier(.17,.67,.83,.67);
+    }
+    @keyframes fadeInUp {
+      0% { opacity:0; transform:translateY(60px);}
+      100% { opacity:1; transform:none;}
+    }
+    .match-title {
+      font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: #b56edc;
+      text-align: center;
+      margin-bottom: 2.4rem;
+      margin-top: 0.3rem;
+      letter-spacing: 1.3px;
+      text-shadow: 0 2px 16px #ffd3ec1a;
+    }
+    .form-label {
+      font-weight: 700;
+      color: #ae63be;
+      font-size: 1.13rem;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.1px;
+    }
+    .form-control, .form-select {
+      border-radius: 1.1rem;
+      border: 1.7px solid #efe6f7;
+      padding: 1rem 1.13rem;
+      background: #faf6fd;
+      font-size: 1.16rem;
+      margin-bottom: 0.74rem;
+      box-shadow: none;
+      font-family: 'Pretendard', Arial, sans-serif;
+      transition: border-color 0.17s, box-shadow 0.17s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #e9b6ea;
+      background: #fff;
+      box-shadow: 0 0 0 2px #ffb6b954;
+    }
+    .custom-checkbox {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 2.1rem;
+      cursor: pointer;
+      font-size: 1.13rem;
+      user-select: none;
+      padding-left: 2.2em;
+      font-weight: 500;
+      color: #ae8cce;
+      margin-top: 0.5em;
+      transition: color .15s;
+    }
+    .custom-checkbox input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0; width: 0;
+    }
+    .custom-checkbox .checkmark {
+      position: absolute;
+      left: 0; top: 0.07em;
+      height: 1.7em;
+      width: 1.7em;
+      background-color: #f7e6fb;
+      border: 2.2px solid #d4a3ee;
+      border-radius: 9px;
+      transition: background 0.13s, border 0.14s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .custom-checkbox input:checked ~ .checkmark {
+      background-color: #ffd6ef;
+      border-color: #ffb6b9;
+    }
+    .custom-checkbox .checkmark:after {
+      content: "";
+      display: none;
+      width: 0.8em;
+      height: 1.2em;
+      border: solid #fff;
+      border-width: 0 0.23em 0.23em 0;
+      transform: rotate(43deg);
+      margin-left: 0.22em;
+      margin-top: 0.11em;
+    }
+    .custom-checkbox input:checked ~ .checkmark:after {
+      display: block;
+    }
+    .btn-match {
+      font-size: 1.28rem;
+      padding: 1.09rem 0;
+      border-radius: 40px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #ffb6b9 0%, #b56edc 100%);
+      border: none;
+      box-shadow: 0 4px 24px 0 #f6b3df29;
+      color: #fff;
+      letter-spacing: 1.8px;
+      margin-top: 1.1rem;
+      margin-bottom: 0.5rem;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.14s;
+      font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
+      animation: pulse 1.7s infinite;
+    }
+    .btn-match:hover {
+      background: linear-gradient(90deg, #b56edc 0%, #ffb6b9 100%);
+      color: #fff;
+      transform: scale(1.021);
+      box-shadow: 0 10px 32px 0 #d4a3ee29;
+    }
+    @keyframes pulse {
+      0% {box-shadow: 0 4px 24px 0 #e4c2ff30;}
+      50% {box-shadow: 0 7px 34px 0 #efb3ff55;}
+      100% {box-shadow: 0 4px 24px 0 #e4c2ff30;}
+    }
+    .match-footer {
+      margin-top: 1.3rem;
+      text-align: center;
+      color: #c2b3c6;
+      font-size: 1.04rem;
+      letter-spacing: 0.28px;
+    }
+    .match-back {
+      color:#bfa6cd;
+      font-size:1.13rem;
+      text-decoration:none;
+      transition:color .2s;
+      font-weight:600;
+      margin-bottom: 1.7rem;
+      display: inline-block;
+      margin-left: 0.2rem;
+    }
+    .match-back:hover {color:#b56edc;}
+    /* 마이페이지 버튼 스타일 */
+    .mypage-btn {
+      position: fixed;
+      top: 2.1rem;
+      right: 2.3rem;
+      z-index: 99;
+      background: rgba(255,255,255,0.98);
+      border-radius: 2.3rem;
+      box-shadow: 0 3px 24px 0 #eed4f529;
+      padding: 0.65rem 1.2rem 0.65rem 1.3rem;
+      font-family: 'Pretendard', 'Montserrat', Arial, sans-serif;
+      font-size: 1.11rem;
+      font-weight: 700;
+      color: #b56edc;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: box-shadow 0.17s, transform 0.14s, background 0.17s, color .13s;
+      border: 1.7px solid #ece5fa;
+      backdrop-filter: blur(3px);
+      animation: fadeInDown 1.2s cubic-bezier(.17,.67,.83,.67);
+    }
+    .mypage-btn:hover {
+      background: linear-gradient(90deg, #fbefff 0%, #ffe3e6 100%);
+      color: #ff95c6;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 7px 24px 0 #efd1fb59;
+    }
+    @media (max-width: 700px) {
+      .match-card { min-width: unset; max-width: 99vw; padding: 1.15rem 0.5rem 0.7rem 0.5rem; }
+      .match-title { font-size: 1.18rem; }
+      .mypage-btn { top: 1rem; right: 1rem; font-size: 0.98rem; padding: 0.53rem 1rem 0.53rem 1rem;}
+    }
+  </style>
+</head>
+<body>
+	<!-- 마이페이지 버튼 (오른쪽 상단 고정) -->
+	<a th:href="@{/mypage}" class="mypage-btn">
+	  <span>마이페이지</span>
+	  <svg width="23" height="23" fill="none" viewBox="0 0 20 20">
+	    <circle cx="10" cy="7" r="4.5" stroke="#b56edc" stroke-width="1.6" fill="white"/>
+	    <path d="M4 17c0-2.5 2.9-4 6-4s6 1.5 6 4" stroke="#b56edc" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+	  </svg>
+	</a>
+  <!-- 파티클 배경 -->
+  <div id="particles-js"></div>
+  <div class="match-card animate__animated animate__fadeInDown">
+    <a href="/" class="match-back">&lt; 돌아가기</a>
+    <div class="match-title">AI 매칭 조건 선택</div>
+    <form id="matchForm" method="post" action="/match" autocomplete="off">
+      <div class="mb-3">
+        <label for="schoolYear" class="form-label">학년</label>
+        <select class="form-select" id="schoolYear" name="schoolYear" required>
+          <option value="">학년을 선택하세요</option>
+          <option value="1">1학년</option>
+          <option value="2">2학년</option>
+          <option value="3">3학년</option>
+          <option value="4">4학년</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="major" class="form-label">학과</label>
+        <select class="form-select" id="major" name="major" required>
+          <option value="">학과를 선택하세요</option>
+          <optgroup label="입체영화예술대학">
+            <option value="영화학과">영화학과</option>
+            <option value="뮤지컬연기전공">뮤지컬연기전공</option>
+            <option value="디지털영상디자인학과">디지털영상디자인학과</option>
+            <option value="연기전공">연기전공</option>
+          </optgroup>
+          <optgroup label="디자인대학">
+            <option value="시각디자인학과">시각디자인학과</option>
+            <option value="패션디자인학과">패션디자인학과</option>
+            <option value="공간환경디자인학과">공간환경디자인학과</option>
+          </optgroup>
+          <optgroup label="미디어콘텐츠대학">
+            <option value="방송영상학과">방송영상학과</option>
+            <option value="게임학과">게임학과</option>
+            <option value="영상애니메이션학과">영상애니메이션학과</option>
+            <option value="웹툰학과">웹툰학과</option>
+          </optgroup>
+          <optgroup label="소프트웨어융합대학">
+            <option value="디지털융합공학과">디지털융합공학과</option>
+            <option value="소프트웨어학과">소프트웨어학과</option>
+            <option value="정보보안학과">정보보안학과</option>
+            <option value="컴퓨터공학과">컴퓨터공학과</option>
+            <option value="스마트모빌리티학과">스마트모빌리티학과(신설)</option>
+            <option value="건축공학과">건축공학과</option>
+          </optgroup>
+          <optgroup label="글로벌관광대학">
+            <option value="호텔경영학과">호텔경영학과</option>
+            <option value="글로벌관광학과">글로벌관광학과</option>
+            <option value="스포츠재활학과">스포츠재활학과</option>
+            <option value="축구학과">축구학과</option>
+          </optgroup>
+          <optgroup label="바이오헬스융합대학">
+            <option value="보건행정학과">보건행정학과</option>
+            <option value="임상병리학과">임상병리학과</option>
+            <option value="간호학과">간호학과</option>
+            <option value="치위생학과">치위생학과</option>
+            <option value="방사선학과">방사선학과</option>
+            <option value="작업치료학과">작업치료학과</option>
+            <option value="재활운동학과">재활운동학과</option>
+            <option value="체육학과">체육학과</option>
+            <option value="식품영양학과">식품영양학과</option>
+          </optgroup>
+          <optgroup label="미래기술대학">
+            <option value="ICT융합공학과">ICT융합공학과</option>
+            <option value="안전관리공학과">안전관리공학과</option>
+            <option value="사회복지상담학과">사회복지상담학과</option>
+            <option value="스포츠레저학과">스포츠레저학과</option>
+            <option value="신호운동처방학과">신호운동처방학과</option>
+            <option value="스포츠재활치료학과">스포츠재활치료학과</option>
+            <option value="스포츠과학과">스포츠과학과</option>
+            <option value="스포츠융합학과">스포츠융합학과</option>
+            <option value="창작학과">창작학과</option>
+          </optgroup>
+          <optgroup label="경영사회과학대학">
+            <option value="경영학과">경영학과</option>
+            <option value="경제금융학과">경제금융학과</option>
+            <option value="국제통상학과">국제통상학과</option>
+            <option value="사회복지학과">사회복지학과</option>
+            <option value="부동산학과">부동산학과</option>
+          </optgroup>
+          <optgroup label="민선교양대학">
+            <option value="자유전공학부">자유전공학부(신설)</option>
+          </optgroup>
+        </select>
+      </div>
+      <label class="custom-checkbox">
+        <input type="checkbox" id="sameAll" name="sameAll" value="1">
+        <span class="checkmark"></span>
+        학과까지 “완전 같은 사람”만 찾기
+      </label>
+      <button type="button" class="btn btn-match w-100" onclick="doMatch()">
+        매칭 시작 💗
+      </button>
+    </form>
+    <div class="match-footer">
+      © 2025 DSU School Matcher.
+    </div>
+  </div>
+  <!-- particles.js -->
+  <script src="/js/match.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    // 파티클 설정
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {"value": 42, "density": {"enable": true, "value_area": 800}},
+        "color": {"value": ["#f8b6d3", "#e6bbfe", "#fff", "#ffd8ec"]},
+        "shape": {"type": "circle"},
+        "opacity": {
+          "value": 0.28,
+          "random": true,
+          "anim": {"enable": true, "speed": 0.5, "opacity_min": 0.13, "sync": false}
+        },
+        "size": {
+          "value": 16,
+          "random": true,
+          "anim": {"enable": false, "speed": 10, "size_min": 5, "sync": false}
+        },
+        "line_linked": {"enable": false},
+        "move": {
+          "enable": true,
+          "speed": 1.5,
+          "direction": "top",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {"onhover": {"enable": false},"onclick": {"enable": false},"resize": true},
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>
