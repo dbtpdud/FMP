@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <title>DSU 친구 랜덤 매칭 채팅</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- SockJS & Stomp.js -->
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <!-- particles.js -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <style>
+  <meta charset="UTF-8" />
+  <title>DSU 친구 랜덤 매칭 채팅</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <!-- SockJS & Stomp.js -->
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+  <!-- particles.js -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pretendard:wght@400;600;800&display=swap');
     html, body {
       height: 100%;
@@ -102,7 +104,7 @@
       letter-spacing: 1.3px;
       cursor: pointer;
       box-shadow: 0 7px 38px #debfff1a, 0 3px 12px #bfa8ee13;
-      transition: background 0.16s, transform 0.11s, box-shadow 0.14s;
+      transition: background 0.16s, transform 0.11s, box-shadow 0.14s, opacity 0.12s;
       font-family: 'Montserrat', Pretendard, Arial, sans-serif;
       outline: none;
       animation: fadeInUp 1.1s cubic-bezier(.17,.67,.83,.67);
@@ -113,6 +115,7 @@
       transform: scale(1.045) translateY(-3px);
       box-shadow: 0 10px 40px #bfa8ee36;
     }
+    #matchBtn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
 
     #matching-div {
       justify-content: center;
@@ -321,226 +324,393 @@
       margin: 9px auto 8px auto;
       display: block;
     }
-    </style>
+  </style>
 </head>
+
 <body>
   <div id="particles-js"></div>
+
   <div class="main-wrap">
-    <div class="center-content">
-      <div class="mini-title">친구 랜덤 매칭 채팅</div>
-      <!-- 매칭 시작 -->
-      <div id="match-div">
-        <button id="matchBtn">친구 랜덤 매칭 시작!</button>
-      </div>
-      <!-- 매칭중 -->
-      <div id="matching-div" style="display: none;">
-        <div class="matching-wait-icon">🤝</div>
-        <div class="matching-wait-msg">친구를 찾는 중...</div>
-        <div class="matching-sub-msg">새로운 친구와 대화할 준비 중입니다.<br/>잠시만 기다려 주세요!</div>
-        <div class="spinner"></div>
-      </div>
-      <!-- 채팅 -->
-      <div id="chat-div" style="display: none;">
-        <div id="chat-box"></div>
-        <form class="chat-input-bar" autocomplete="off" onsubmit="sendMessage(event)">
-          <input type="text" id="message-input" placeholder="메시지를 입력하세요..." autocomplete="off" />
-          <button type="submit" id="sendBtn" disabled>전송</button>
-          <button type="button" id="leaveBtn">나가기</button>
-        </form>
+      <div class="center-content">
+        <div class="mini-title">친구 랜덤 매칭 채팅</div>
+
+        <div id="match-div">
+          <button id="matchBtn">친구 랜덤 매칭 시작!</button>
+        </div>
+
+        <div id="matching-div" style="display: none;">
+          <div class="matching-wait-icon">🤝</div>
+          <div class="matching-wait-msg">친구를 찾는 중...</div>
+          <div class="matching-sub-msg">새로운 친구와 대화할 준비 중입니다.<br/>잠시만 기다려 주세요!</div>
+          <div class="spinner"></div>
+        </div>
+
+        <div id="chat-div" style="display: none;">
+          <div id="chat-box"></div>
+
+          <form class="chat-input-bar" autocomplete="off" id="chatForm">
+            <input type="text" id="message-input" placeholder="메시지를 입력하세요..." autocomplete="off" />
+            <button type="submit" id="sendBtn" disabled>전송</button>
+            <button type="button" id="leaveBtn">나가기</button>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
- <script>
-  // ------------------ 파티클 배경 설정 ------------------
-  particlesJS("particles-js", {
-    "particles": {
-      "number": { "value": 19, "density": { "enable": true, "value_area": 800 } },
-      "color": { "value": ["#c1b1e6", "#fff", "#fae6f2", "#f9eaff"] },
-      "shape": { "type": "circle" },
-      "opacity": {
-        "value": 0.19,
-        "random": true
-      },
-      "size": {
-        "value": 35,
-        "random": true
-      },
-      "line_linked": { "enable": false },
-      "move": {
-        "enable": true,
-        "speed": 0.28,
-        "direction": "top-right",
-        "random": true,
-        "straight": false,
-        "out_mode": "out",
-        "bounce": false
-      }
-    },
-    "interactivity": {
-      "detect_on": "canvas",
-      "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true }
-    },
-    "retina_detect": true
-  });
 
-  // ------------------ 채팅/매칭 로직 ------------------
-  let stompClient = null;
-  let roomId = null;
-  let myUserId = null;
+	<script th:inline="javascript">
+	  // ✅ 서버(세션)에서 주입되는 "내 아이디"
+	  // 컨트롤러에서 model.addAttribute("myUserId", 세션값) 꼭 넣어줘야 함!
+	  const MY_USER_ID = /*[[${myUserId}]]*/ null;
+	</script>
 
-  // (1) 매칭 시작 버튼 클릭
-  document.getElementById("matchBtn").onclick = function() {
-    document.getElementById("match-div").style.display = "none";
-    document.getElementById("matching-div").style.display = "flex";
-    requestMatch();
-  };
+	<script>
+	  // ------------------ 파티클 배경 설정 ------------------
+	  particlesJS("particles-js", {
+	    particles: {
+	      number: { value: 19, density: { enable: true, value_area: 800 } },
+	      color: { value: ["#c1b1e6", "#fff", "#fae6f2", "#f9eaff"] },
+	      shape: { type: "circle" },
+	      opacity: { value: 0.19, random: true },
+	      size: { value: 35, random: true },
+	      line_linked: { enable: false },
+	      move: { enable: true, speed: 0.28, direction: "top-right", random: true, straight: false, out_mode: "out", bounce: false }
+	    },
+	    interactivity: { detect_on: "canvas", events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+	    retina_detect: true
+	  });
 
-  // (2) 매칭 폴링 함수
-  function requestMatch() {
-    fetch("/match/random")
-      .then(res => res.json())
-      .then(data => {
-        myUserId = data.userId;
-        if (data.roomId) {
-          onMatched(data.roomId);
-        } else {
-          setTimeout(requestMatch, 900);
-        }
-      })
-      .catch(err => {
-        document.getElementById("matching-div").innerHTML =
-          "<div class='system-message' style='color:red;'>매칭 중 오류가 발생했습니다.</div>";
-        console.error("매칭 오류:", err);
-      });
-  }
+	  // ------------------ URL에서 매칭 조건 읽기 ------------------
+	  const params = new URLSearchParams(location.search);
+	  const selectedSchoolYear = params.get("schoolYear"); // "1" ~ "4"
+	  const selectedMajor = params.get("major");           // ex) "컴퓨터공학과"
+	  const sameAll = params.get("sameAll");               // "1" or "0" (혹은 null)
 
-  // (3) 매칭 완료 시 호출
-  function onMatched(returnedRoomId) {
-    roomId = returnedRoomId;
-    document.getElementById("matching-div").style.display = "none";
-    document.getElementById("chat-div").style.display = "flex";
-    connectToChatRoom();
-    document.getElementById("message-input").focus();
-  }
+	  // ------------------ 채팅/매칭 로직 ------------------
+	  let stompClient = null;
+	  let matchId = null;
+	  let roomId = null;
+	  
+	  // ✅ 매칭 성공 연출용
+	  let matchedDelayTimer = null;
+	  const MATCHED_DELAY_MS = 2300; // 1000~2000 사이로 취향대로
 
-  // (4) STOMP(WebSocket) 연결 및 구독
-  function connectToChatRoom() {
-    const socket = new SockJS("/ws-chat");
-    stompClient = Stomp.over(socket);
-    stompClient.debug = null;
-    stompClient.connect({}, function(frame) {
-      // 구독 콜백: LEAVE 감지
-      stompClient.subscribe("/topic/chat/" + roomId, function(msg) {
-        const data = JSON.parse(msg.body);
+	  function showMatchedOverlay() {
+	    // matchingDiv를 "성공" 화면으로 바꿔치기
+	    matchingDiv.innerHTML = `
+	      <div class="matching-wait-icon">✅</div>
+	      <div class="matching-wait-msg">매칭 성공!</div>
+	      <div class="matching-sub-msg">곧 채팅방으로 이동합니다...</div>
+	      <div class="spinner" style="opacity:.35;"></div>
+	    `;
+	  }
 
-        // 상대방 퇴장 메시지 처리
-        if (data.text === "LEAVE" && data.senderId !== myUserId) {
-          appendSystemMessage("상대방이 나갔습니다.");
-          document.getElementById("sendBtn").disabled = true;
-          return;
-        }
+	  function goChatAfterDelay(mId) {
+	    // 중복 호출 방지
+	    if (matchedDelayTimer) return;
 
-        // 일반 채팅 메시지
-        appendChatMessage(data);
-      });
-      document.getElementById("sendBtn").disabled = false;
-    }, function(error) {
-      appendSystemMessage("채팅 서버 연결에 실패했습니다.");
-    });
-  }
+	    showMatchedOverlay();
 
-  // (5) 엔터키 혹은 전송 버튼 클릭 시 호출
-  function sendMessage(event) {
-    event.preventDefault();
-    sendChatMessage();
-  }
+	    matchedDelayTimer = setTimeout(() => {
+	      matchedDelayTimer = null;
+	      onMatched(mId);
+	    }, MATCHED_DELAY_MS);
+	  }
 
-  // (6) 실제 채팅 메시지를 서버로 전송
-  function sendChatMessage() {
-    const input = document.getElementById("message-input");
-    const content = input.value.trim();
-    if (!content || !stompClient) return;
+	  // ✅ 핵심: 내 아이디를 "서버 주입값"으로 고정
+	  let myUserId = MY_USER_ID;
 
-    // 클라이언트 로컬 시각을 HH:mm 형식으로 만들어서 timestamp1로 보낸다.
-    const now = new Date();
-    const hh = now.getHours().toString().padStart(2, "0");
-    const mm = now.getMinutes().toString().padStart(2, "0");
-    const timeStr = `${hh}:${mm}`;
+	  let isMatching = false;
+	  let matchTimer = null;
+	  let matchAbort = null;
 
-    // ChatsDTO 필드명(timestamp1)에 맞춰서 JSON을 만든다.
-    const chatMessage = {
-      senderId: myUserId,
-      text: content,
-      timestamp1: timeStr
-    };
-    stompClient.send("/app/chat/" + roomId, {}, JSON.stringify(chatMessage));
-    input.value = "";
-  }
+	  const matchBtn = document.getElementById("matchBtn");
+	  const matchDiv = document.getElementById("match-div");
+	  const matchingDiv = document.getElementById("matching-div");
+	  const chatDiv = document.getElementById("chat-div");
+	  const sendBtn = document.getElementById("sendBtn");
+	  const leaveBtn = document.getElementById("leaveBtn");
+	  const messageInput = document.getElementById("message-input");
+	  const chatForm = document.getElementById("chatForm") || document.querySelector("form.chat-input-bar");
 
-  // (7) 수신한 메시지를 화면에 그려준다.
-  function appendChatMessage(msg) {
-    const chatBox = document.getElementById("chat-box");
-    const row = document.createElement("div");
+	  function show(el) { el.style.display = "flex"; }
+	  function hide(el) { el.style.display = "none"; }
 
-    // 서버가 보낸 JSON 에서 msg.timestamp1 을 사용한다.
-    const time = msg.timestamp1 || "";
-    const isMe = (msg.senderId === myUserId);
-    row.className = "chat-row " + (isMe ? "me" : "you");
+	  function requireQuery() {
+	    if (!selectedSchoolYear || !selectedMajor) {
+	      matchingDiv.innerHTML =
+	        "<div class='system-message' style='color:red;'>매칭 조건(학년/학과)이 전달되지 않았습니다. 매칭 조건 선택 화면에서 다시 시작해 주세요.</div>";
+	      return false;
+	    }
+	    return true;
+	  }
 
-    const sender = isMe ? "나" : "익명";
-    row.innerHTML = `
-      <div class="bubble">
-        <span class="sender">${sender}</span>
-        <span class="text">${msg.text}</span>
-        <span class="time">${time}</span>
-      </div>
-    `;
-    chatBox.appendChild(row);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+	  // ✅ 내 아이디가 서버에서 안 들어오면 바로 안내 (여기서 막아줘야 헷갈림 없음)
+	  function requireLoginUserId() {
+	    if (!myUserId) {
+	      matchingDiv.innerHTML =
+	        "<div class='system-message' style='color:red;'>내 사용자 아이디를 불러오지 못했습니다. (로그인/세션 확인 필요)</div>";
+	      return false;
+	    }
+	    return true;
+	  }
 
-  // (8) 시스템 메시지(예: 연결 실패 등)를 화면에 표시
-  function appendSystemMessage(msg) {
-    const chatBox = document.getElementById("chat-box");
-    const div = document.createElement("div");
-    div.className = "system-message";
-    div.textContent = msg;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+	  // ------------------ (1) 매칭 시작 ------------------
+	  matchBtn.addEventListener("click", async () => {
+	    if (isMatching) return;
+	    isMatching = true;
 
-//(9) 전송/나가기 버튼 이벤트 바인딩
-  document.getElementById("sendBtn").onclick = sendChatMessage;
-  document.getElementById("message-input").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") sendChatMessage();
-  });
+	    matchBtn.disabled = true;
+	    hide(matchDiv);
+	    show(matchingDiv);
 
-  // 나가기 버튼 클릭 시 LEAVE 메시지 전송 후 새로고침
-  document.getElementById("leaveBtn").onclick = function() {
-    if (stompClient && stompClient.connected) {
-      stompClient.send(
-        "/app/chat/" + roomId + "/leave",
-        {},
-        JSON.stringify({ senderId: myUserId })
-      );
-      stompClient.disconnect();
-    }
-    location.reload();
-  };
+	    try {
+	      if (!requireQuery()) {
+	        isMatching = false;
+	        matchBtn.disabled = false;
+	        return;
+	      }
+	      if (!requireLoginUserId()) {
+	        isMatching = false;
+	        matchBtn.disabled = false;
+	        return;
+	      }
 
-  // 페이지 닫기/새로고침 시에도 LEAVE 전송
-  window.addEventListener("beforeunload", function() {
-    if (stompClient && stompClient.connected) {
-      stompClient.send(
-        "/app/chat/" + roomId + "/leave",
-        {},
-        JSON.stringify({ senderId: myUserId })
-      );
-      stompClient.disconnect();
-    }
-  });
-</script>
+	      const res = await fetch(
+	        `/api/matches/create?schoolYear=${encodeURIComponent(selectedSchoolYear)}&major=${encodeURIComponent(selectedMajor)}&sameAll=${encodeURIComponent(sameAll ?? "0")}`,
+	        { method: "POST", cache: "no-store", headers: { "Accept": "application/json" } }
+	      );
 
+	      if (res.status === 401) throw new Error("LOGIN_REQUIRED");
+	      if (!res.ok) {
+	        const t = await res.text().catch(() => "");
+	        throw new Error("CREATE_FAILED: " + res.status + " " + t);
+	      }
 
-</body>
-</html>
+	      const data = await res.json();
+	      if (!data) throw new Error("NO_MATCH");
+
+	      matchId = data.matchId ?? data.match_id ?? data.id;
+	      if (!matchId) throw new Error("MATCH_ID_MISSING");
+
+	      const status = data.status;
+
+		  if (status === "MATCHED") {
+		    isMatching = false;
+		    stopStatusPolling();
+		    goChatAfterDelay(matchId);   // ✅ 변경
+		  } else {
+		    startStatusPolling();
+		  }
+
+	    } catch (err) {
+	      console.error("매칭 시작 오류:", err);
+
+	      isMatching = false;
+	      stopStatusPolling();
+
+	      let msg = "매칭 중 오류가 발생했습니다.";
+	      if (String(err.message).includes("LOGIN_REQUIRED")) msg = "로그인이 필요합니다.";
+	      if (String(err.message).includes("NO_MATCH")) msg = "현재 매칭 가능한 사용자가 없습니다.";
+
+	      matchingDiv.innerHTML = `<div class='system-message' style='color:red;'>${msg}</div>`;
+	      matchBtn.disabled = false;
+	    }
+	  });
+
+	  // ------------------ (2) status 폴링 ------------------
+	  function startStatusPolling() {
+	    stopStatusPolling();
+	    pollStatusOnce();
+	  }
+
+	  function stopStatusPolling() {
+	    if (matchTimer) { clearTimeout(matchTimer); matchTimer = null; }
+	    if (matchAbort) { matchAbort.abort(); matchAbort = null; }
+	  }
+
+	  async function pollStatusOnce() {
+	    if (!isMatching) return;
+	    if (!matchId) return;
+
+	    try {
+	      matchAbort = new AbortController();
+
+	      const res = await fetch(`/api/matches/status?matchId=${encodeURIComponent(matchId)}`, {
+	        method: "GET",
+	        cache: "no-store",
+	        headers: { "Accept": "application/json" },
+	        signal: matchAbort.signal
+	      });
+
+	      if (!res.ok) {
+	        const t = await res.text().catch(() => "");
+	        throw new Error("STATUS_FAILED: " + res.status + " " + t);
+	      }
+
+	      const data = await res.json();
+	      const status = data.status;
+
+		  if (status === "MATCHED") {
+		    isMatching = false;
+		    stopStatusPolling();
+		    goChatAfterDelay(matchId);   // ✅ 변경
+		    return;
+		  }
+
+	      matchTimer = setTimeout(pollStatusOnce, 900);
+
+	    } catch (err) {
+	      if (err && err.name === "AbortError") return;
+
+	      console.error("매칭 상태 폴링 오류:", err);
+
+	      isMatching = false;
+	      stopStatusPolling();
+
+	      matchingDiv.innerHTML =
+	        "<div class='system-message' style='color:red;'>매칭 상태 조회 중 오류가 발생했습니다.</div>";
+	      matchBtn.disabled = false;
+	    }
+	  }
+
+	  // ------------------ (3) 매칭 완료 ------------------
+	  function onMatched(mId) {
+	    roomId = mId;
+
+	    hide(matchingDiv);
+	    show(chatDiv);
+
+	    connectToChatRoom();
+	    messageInput.focus();
+	  }
+
+	  // ------------------ (4) STOMP 연결 ------------------
+	  function connectToChatRoom() {
+	    const socket = new SockJS("/ws-chat");
+	    stompClient = Stomp.over(socket);
+	    stompClient.debug = null;
+
+	    stompClient.connect({}, () => {
+	      stompClient.subscribe("/topic/chat/" + roomId, (msg) => {
+	        const data = JSON.parse(msg.body);
+
+	        if (data.text === "LEAVE" && myUserId && data.senderId !== myUserId) {
+	          appendSystemMessage("상대방이 나갔습니다.");
+	          sendBtn.disabled = true;
+	          return;
+	        }
+
+	        appendChatMessage(data);
+	      });
+
+	      sendBtn.disabled = false;
+	    }, () => {
+	      appendSystemMessage("채팅 서버 연결에 실패했습니다.");
+	    });
+	  }
+
+	  // ------------------ (5) 메시지 전송 ------------------
+	  chatForm.addEventListener("submit", (e) => {
+	    e.preventDefault();
+	    sendChatMessage();
+	  });
+
+	  function sendChatMessage() {
+	    const content = messageInput.value.trim();
+	    if (!content || !stompClient || !stompClient.connected) return;
+
+	    const now = new Date();
+	    const hh = now.getHours().toString().padStart(2, "0");
+	    const mm = now.getMinutes().toString().padStart(2, "0");
+	    const timeStr = `${hh}:${mm}`;
+
+	    const chatMessage = { senderId: myUserId, text: content, timestamp1: timeStr };
+	    stompClient.send("/app/chat/" + roomId, {}, JSON.stringify(chatMessage));
+
+	    messageInput.value = "";
+	    messageInput.focus();
+	  }
+
+	  // ------------------ (6) 화면 출력 ------------------
+	  function appendChatMessage(msg) {
+	    const chatBox = document.getElementById("chat-box");
+	    const row = document.createElement("div");
+
+	    const time = msg.timestamp1 || "";
+	    const isMe = (myUserId && msg.senderId === myUserId);
+	    row.className = "chat-row " + (isMe ? "me" : "you");
+
+	    const sender = isMe ? "나" : "익명";
+	    row.innerHTML = `
+	      <div class="bubble">
+	        <span class="sender">${sender}</span>
+	        <span class="text">${escapeHtml(msg.text ?? "")}</span>
+	        <span class="time">${escapeHtml(time)}</span>
+	      </div>
+	    `;
+	    chatBox.appendChild(row);
+	    chatBox.scrollTop = chatBox.scrollHeight;
+	  }
+
+	  function appendSystemMessage(msg) {
+	    const chatBox = document.getElementById("chat-box");
+	    const div = document.createElement("div");
+	    div.className = "system-message";
+	    div.textContent = msg;
+	    chatBox.appendChild(div);
+	    chatBox.scrollTop = chatBox.scrollHeight;
+	  }
+
+	  function escapeHtml(str) {
+	    return String(str)
+	      .replaceAll("&", "&amp;")
+	      .replaceAll("<", "&lt;")
+	      .replaceAll(">", "&gt;")
+	      .replaceAll('"', "&quot;")
+	      .replaceAll("'", "&#039;");
+	  }
+
+	  // ------------------ (7) 나가기 ------------------
+	  leaveBtn.addEventListener("click", async () => {
+		if (matchedDelayTimer) { clearTimeout(matchedDelayTimer); matchedDelayTimer = null; }
+	    isMatching = false;
+	    stopStatusPolling();
+
+	    // ✅ DB 상태 ENDED 처리(재매칭 꼬임 방지)
+	    if (matchId) {
+	      try {
+	        await fetch(`/api/matches/${encodeURIComponent(matchId)}/leave`, {
+	          method: "PUT",
+	          cache: "no-store",
+	          headers: { "Accept": "application/json" }
+	        });
+	      } catch (e) {
+	        console.error("leave API 실패:", e);
+	      }
+	    }
+
+	    // STOMP 알림 + 종료
+	    try {
+	      if (stompClient && stompClient.connected) {
+	        stompClient.send("/app/chat/" + roomId + "/leave", {}, JSON.stringify({ senderId: myUserId }));
+	        stompClient.disconnect();
+	      }
+	    } catch (e) {}
+
+	    location.reload();
+	  });
+
+	  window.addEventListener("beforeunload", () => {
+	    isMatching = false;
+	    stopStatusPolling();
+	    try {
+	      if (stompClient && stompClient.connected) {
+	        stompClient.send("/app/chat/" + roomId + "/leave", {}, JSON.stringify({ senderId: myUserId }));
+	        stompClient.disconnect();
+	      }
+	    } catch (e) {}
+	  });
+	</script>
+
+  </body>
+  </html>

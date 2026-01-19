@@ -185,7 +185,6 @@
       margin-left: 0.2rem;
     }
     .match-back:hover {color:#b56edc;}
-    /* 마이페이지 버튼 스타일 */
     .mypage-btn {
       position: fixed;
       top: 2.1rem;
@@ -222,20 +221,21 @@
   </style>
 </head>
 <body>
-	<!-- 마이페이지 버튼 (오른쪽 상단 고정) -->
-	<a th:href="@{/mypage}" class="mypage-btn">
-	  <span>마이페이지</span>
-	  <svg width="23" height="23" fill="none" viewBox="0 0 20 20">
-	    <circle cx="10" cy="7" r="4.5" stroke="#b56edc" stroke-width="1.6" fill="white"/>
-	    <path d="M4 17c0-2.5 2.9-4 6-4s6 1.5 6 4" stroke="#b56edc" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-	  </svg>
-	</a>
-  <!-- 파티클 배경 -->
+  <a th:href="@{/mypage}" class="mypage-btn">
+    <span>마이페이지</span>
+    <svg width="23" height="23" fill="none" viewBox="0 0 20 20">
+      <circle cx="10" cy="7" r="4.5" stroke="#b56edc" stroke-width="1.6" fill="white"/>
+      <path d="M4 17c0-2.5 2.9-4 6-4s6 1.5 6 4" stroke="#b56edc" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    </svg>
+  </a>
+
   <div id="particles-js"></div>
+
   <div class="match-card animate__animated animate__fadeInDown">
     <a href="/" class="match-back">&lt; 돌아가기</a>
     <div class="match-title">AI 매칭 조건 선택</div>
-    <form id="matchForm" method="post" action="/match" autocomplete="off">
+
+    <form id="matchForm" autocomplete="off">
       <div class="mb-3">
         <label for="schoolYear" class="form-label">학년</label>
         <select class="form-select" id="schoolYear" name="schoolYear" required>
@@ -246,10 +246,12 @@
           <option value="4">4학년</option>
         </select>
       </div>
+
       <div class="mb-3">
         <label for="major" class="form-label">학과</label>
         <select class="form-select" id="major" name="major" required>
           <option value="">학과를 선택하세요</option>
+          <!-- (옵션들 그대로) -->
           <optgroup label="입체영화예술대학">
             <option value="영화학과">영화학과</option>
             <option value="뮤지컬연기전공">뮤지컬연기전공</option>
@@ -315,24 +317,25 @@
           </optgroup>
         </select>
       </div>
+
       <label class="custom-checkbox">
         <input type="checkbox" id="sameAll" name="sameAll" value="1">
         <span class="checkmark"></span>
         학과까지 “완전 같은 사람”만 찾기
       </label>
-      <button type="button" class="btn btn-match w-100" onclick="doMatch()">
+
+      <button id="matchBtn" type="button" class="btn btn-match w-100">
         매칭 시작 💗
       </button>
     </form>
+
     <div class="match-footer">
       © 2025 DSU School Matcher.
     </div>
   </div>
-  <!-- particles.js -->
-  <script src="/js/match.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
-    // 파티클 설정
     particlesJS("particles-js", {
       "particles": {
         "number": {"value": 42, "density": {"enable": true, "value_area": 800}},
@@ -361,9 +364,32 @@
       },
       "interactivity": {
         "detect_on": "canvas",
-        "events": {"onhover": {"enable": false},"onclick": {"enable": false},"resize": true},
+        "events": {"onhover": {"enable": false},"onclick": {"enable": false},"resize": true}
       },
       "retina_detect": true
+    });
+
+    // ✅ 최종형: 선택값을 querystring으로 넘겨서 chat.html이 사용하게 함
+    document.getElementById("matchBtn").addEventListener("click", () => {
+      const schoolYear = document.getElementById("schoolYear").value;
+      const major = document.getElementById("major").value;
+      const sameAll = document.getElementById("sameAll").checked ? "1" : "";
+
+      if (!schoolYear) {
+        alert("학년을 선택하세요.");
+        return;
+      }
+      if (!major) {
+        alert("학과를 선택하세요.");
+        return;
+      }
+
+      const url =
+        `/random-match?schoolYear=${encodeURIComponent(schoolYear)}` +
+        `&major=${encodeURIComponent(major)}` +
+        `&sameAll=${encodeURIComponent(sameAll)}`;
+
+      location.href = url;
     });
   </script>
 </body>

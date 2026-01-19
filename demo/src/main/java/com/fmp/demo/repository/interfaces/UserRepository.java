@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.fmp.demo.dto.MatchProfile;
 
 import com.fmp.demo.repository.model.User;
 
@@ -32,5 +33,15 @@ public interface UserRepository {
 	 */
 	// user 생성
 	public int insertUser(User user);
+	
+	@Select("""
+		    SELECT
+		      school_year AS schoolYear,
+		      major       AS major
+		    FROM users
+		    WHERE student_id = #{studentId}
+		    LIMIT 1
+		""")
+		MatchProfile findMatchProfileByStudentId(@Param("studentId") String studentId);
 	
 }

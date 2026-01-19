@@ -4,64 +4,146 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fmp.demo.repository.interfaces.MatchRepository">
 
-  <!--
-    1. 매칭 가능한 사용자 후보 조회
-       - SQL에서는 단순히 같은 학년·학과인 모든 사용자 ID를 반환합니다.
-       - 서비스에서 본인 ID를 지워서 후보 목록을 완성합니다.
-  -->
-  <select id="findAvailableUserIds"
-          resultType="string"
-          parameterType="map">
-    SELECT u.student_id
-      FROM users u
-     WHERE u.school_year = #{schoolYear}
-       AND u.major       = #{major}
+  <!-- 단건 조회 -->
+  <select id="getMatchById" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE match_id = #{matchId}
   </select>
 
-  <!-- 2. 매칭 생성 -->
-  <insert id="createMatch"
+  <!-- 내 매칭 전체 조회 -->
+  <select id="getMatchesByUserId" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE user1_id = #{userId}
+       OR user2_id = #{userId}
+    ORDER BY created_at DESC
+  </select>
+
+  <!-- 상태 변경 -->
+  <update id="updateMatchStatus">
+    UPDATE matches
+    SET status = #{status}
+    WHERE match_id = #{matchId}
+  </update>
+
+  <!-- 삭제 -->
+  <delete id="deleteMatch">
+    DELETE FROM matches
+    WHERE match_id = #{matchId}
+  </delete>
+
+
+  <!-- ========================================================= -->
+  <!-- ✅ 기존(학년 + 학과 동일) 로직: 유지 -->
+  <!-- ========================================================= -->
+
+  <!-- ✅ 내가 이미 만들어둔 WAITING이 있는지 확인 (학년+학과 동일) -->
+  <select id="findMyWaitingMatch" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE status = 'WAITING'
+      AND user1_id = #{myUserId}
+      AND user2_id IS NULL
+      AND school_year = #{schoolYear}
+      AND major = #{major}
+    ORDER BY created_at DESC
+    LIMIT 1
+  </select>
+
+  <!-- ✅ 조건에 맞는 "다른 사람" WAITING 1개 찾기 (학년+학과 동일) -->
+  <select id="findWaitingMatch" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE status = 'WAITING'
+      AND school_year = #{schoolYear}
+      AND major = #{major}
+      AND user2_id IS NULL
+      AND user1_id != #{myUserId}
+    ORDER BY created_at ASC
+    LIMIT 1
+  </select>
+
+
+  <!-- ========================================================= -->
+  <!-- ✅ 최종형 추가: sameAll 분기용 쿼리 4개 -->
+  <!--  - sameAll=1 : 학년+학과 동일 (major 조건 사용) -->
+  <!--  - sameAll=0 : 학년만 동일 (major IS NULL 로 구분) -->
+  <!-- ========================================================= -->
+
+  <!-- ✅ sameAll=1 : 남의 WAITING 찾기 -->
+  <select id="findWaitingMatchSameAll" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE status = 'WAITING'
+      AND user2_id IS NULL
+      AND school_year = #{schoolYear}
+      AND major = #{major}
+      AND user1_id != #{myUserId}
+    ORDER BY created_at ASC
+    LIMIT 1
+  </select>
+
+  <!-- ✅ sameAll=1 : 내 WAITING 찾기 -->
+  <select id="findMyWaitingMatchSameAll" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE status = 'WAITING'
+      AND user2_id IS NULL
+      AND user1_id = #{myUserId}
+      AND school_year = #{schoolYear}
+      AND major = #{major}
+    ORDER BY created_at DESC
+    LIMIT 1
+  </select>
+
+  <!-- ✅ sameAll=0 : 남의 WAITING 찾기 (학년만 동일) -->
+  <!--     핵심: major IS NULL 인 WAITING끼리만 매칭 -->
+  <select id="findWaitingMatchSchoolOnly" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE status = 'WAITING'
+      AND user2_id IS NULL
+      AND school_year = #{schoolYear}
+      AND major IS NULL
+      AND user1_id != #{myUserId}
+    ORDER BY created_at ASC
+    LIMIT 1
+  </select>
+
+  <!-- ✅ sameAll=0 : 내 WAITING 찾기 (학년만 동일) -->
+  <select id="findMyWaitingMatchSchoolOnly" resultType="com.fmp.demo.dto.MatchDTO">
+    SELECT *
+    FROM matches
+    WHERE status = 'WAITING'
+      AND user2_id IS NULL
+      AND user1_id = #{myUserId}
+      AND school_year = #{schoolYear}
+      AND major IS NULL
+    ORDER BY created_at DESC
+    LIMIT 1
+  </select>
+
+
+  <!-- ========================================================= -->
+  <!-- ✅ WAITING에 붙이기 (동시성 방지 조건 포함) -->
+  <!-- ========================================================= -->
+  <update id="joinWaitingMatch">
+    UPDATE matches
+    SET user2_id = #{myUserId},
+        status  = 'MATCHED'
+    WHERE match_id = #{matchId}
+      AND status = 'WAITING'
+      AND user2_id IS NULL
+  </update>
+
+  <!-- ✅ WAITING 만들기 -->
+  <insert id="createWaitingMatch"
           parameterType="com.fmp.demo.dto.MatchDTO"
           useGeneratedKeys="true"
           keyProperty="matchId">
-    INSERT INTO matches
-      (user1_id, user2_id, school_year, major, status)
-    VALUES
-      (#{user1Id}, #{user2Id}, #{schoolYear}, #{major}, #{status})
+    INSERT INTO matches (user1_id, user2_id, school_year, major, status)
+    VALUES (#{user1Id}, NULL, #{schoolYear}, #{major}, 'WAITING')
   </insert>
-
-  <!-- 3. 단건 조회 -->
-  <select id="getMatchById"
-          resultType="com.fmp.demo.dto.MatchDTO"
-          parameterType="long">
-    SELECT *
-      FROM matches
-     WHERE match_id = #{matchId}
-  </select>
-
-  <!-- 4. 내 매칭 전체 조회 -->
-  <select id="getMatchesByUserId"
-          resultType="com.fmp.demo.dto.MatchDTO"
-          parameterType="string">
-    SELECT *
-      FROM matches
-     WHERE user1_id = #{userId}
-        OR user2_id = #{userId}
-     ORDER BY created_at DESC
-  </select>
-
-  <!-- 5. 매칭 상태 변경 -->
-  <update id="updateMatchStatus"
-          parameterType="map">
-    UPDATE matches
-       SET status = #{status}
-     WHERE match_id = #{matchId}
-  </update>
-
-  <!-- 6. 매칭 삭제 -->
-  <delete id="deleteMatch"
-          parameterType="long">
-    DELETE FROM matches
-     WHERE match_id = #{matchId}
-  </delete>
 
 </mapper>

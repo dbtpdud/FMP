@@ -7,33 +7,46 @@ import org.apache.ibatis.annotations.Param;
 
 import com.fmp.demo.dto.MatchDTO;
 
-// 매칭 인터페이스
-// 생성(저장), 조회, 업데이트(상태변경), 삭제(매칭 종료)
 @Mapper
 public interface MatchRepository {
-	
-	  /** 1. 매칭 가능한 사용자 후보 조회 */
-    List<String> findAvailableUserIds(
-        @Param("schoolYear") int schoolYear,
-        @Param("major") String major
-    );
 
-    /** 2. 매칭 생성(저장) */
-    int createMatch(MatchDTO matchDTO);
-
-    /** 3. 단건 조회 (matchId 기준) */
     MatchDTO getMatchById(@Param("matchId") Long matchId);
 
-    /** 4. 내 매칭 전체 조회 (userId 기준) */
     List<MatchDTO> getMatchesByUserId(@Param("userId") String userId);
 
-    /** 5. 매칭 상태 변경(업데이트) */
-    int updateMatchStatus(
-        @Param("matchId") Long matchId,
-        @Param("status") String status
-    );
+    int updateMatchStatus(@Param("matchId") Long matchId, @Param("status") String status);
 
-    /** 6. 매칭 삭제(종료) */
     int deleteMatch(@Param("matchId") Long matchId);
 
+    // ✅ (기존) 학년+학과 동일 매칭용
+    MatchDTO findWaitingMatch(@Param("schoolYear") int schoolYear,
+                              @Param("major") String major,
+                              @Param("myUserId") String myUserId);
+
+    MatchDTO findMyWaitingMatch(@Param("myUserId") String myUserId,
+                                @Param("schoolYear") int schoolYear,
+                                @Param("major") String major);
+
+    // ✅ (최종형) sameAll=1 : 학년+학과 동일
+    MatchDTO findWaitingMatchSameAll(@Param("schoolYear") int schoolYear,
+                                     @Param("major") String major,
+                                     @Param("myUserId") String myUserId);
+
+    MatchDTO findMyWaitingMatchSameAll(@Param("myUserId") String myUserId,
+                                       @Param("schoolYear") int schoolYear,
+                                       @Param("major") String major);
+
+    // ✅ (최종형) sameAll=0 : 학년만 동일 (major IS NULL)
+    MatchDTO findWaitingMatchSchoolOnly(@Param("schoolYear") int schoolYear,
+                                        @Param("myUserId") String myUserId);
+
+    MatchDTO findMyWaitingMatchSchoolOnly(@Param("myUserId") String myUserId,
+                                          @Param("schoolYear") int schoolYear);
+
+    // ✅ WAITING에 붙기
+    int joinWaitingMatch(@Param("matchId") Long matchId,
+                         @Param("myUserId") String myUserId);
+
+    // ✅ WAITING 만들기
+    int createWaitingMatch(MatchDTO dto);
 }

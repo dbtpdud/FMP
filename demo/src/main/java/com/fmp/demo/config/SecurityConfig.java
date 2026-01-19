@@ -28,7 +28,8 @@ public class SecurityConfig{
 	            )
 
 	            // 3) H2 콘솔 등을 위해 frameOptions 비활성화 (필요 없으면 이 줄 삭제 가능)
-	            .headers(headers -> headers.frameOptions().disable());
+	            .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+
 
 	            // 4) 기본 로그인 폼 비활성화 (필요하다면 주석처리)
 //	            .httpBasic(Customizer.withDefaults());

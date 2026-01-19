@@ -17,14 +17,14 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/db_fmp_project?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: wtqe2513
+    password: a4067716a!
 
   output:
     ansi:
       enabled: always
 
 mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
+  mapper-locations: classpath:/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

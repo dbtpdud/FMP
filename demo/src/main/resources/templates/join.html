@@ -2,66 +2,208 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>회원가입</title>
-  <!-- Bootstrap 5  -->
+  <title>DSU 랜덤 매칭 회원가입</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <!-- Pretendard & Montserrat 폰트 -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      font-family: 'Segoe UI', sans-serif;
+    html, body {
+      min-height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #e9d0ff 100%);
+      margin: 0; padding: 0;
+      font-family: 'Pretendard', 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      overflow-x: hidden;
     }
-    .form-box {
-      background: white;
-      border-radius: 2rem;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      padding: 2rem;
-      max-width: 400px;
-      margin: 10vh auto;
+    #particles-js {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0; left: 0;
+      z-index: 1;
+      pointer-events: none;
     }
-    .form-title {
-      text-align: center;
-      color: #667eea;
-      font-weight: bold;
-      font-size: 1.8rem;
-      margin-bottom: 1.5rem;
-    }
-    .btn-purple {
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      color: white;
-      border: none;
+    .login-card {
+      z-index: 10;
+      position: relative;
+      max-width: 560px;
+      min-width: 350px;
       width: 100%;
-      font-size: 1rem;
-      padding: 0.75rem;
-      border-radius: 1.5rem;
+      margin: 6vh auto 0 auto;
+      background: rgba(255,255,255,0.97);
+      border-radius: 2.5rem;
+      box-shadow: 0 16px 60px 0 #a48fcd1f, 0 2px 16px #e3b2fb2b;
+      padding: 3.3rem 2.5rem 2.7rem 2.5rem;
+      animation: fadein 1s;
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(48px);}
+      to   { opacity: 1; transform: none;}
+    }
+    .brand-title {
+      text-align: center;
+      font-size: 2.3rem;
+      font-weight: 800;
+      font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
+      color: #726be5;
+      letter-spacing: 1.3px;
+      margin-bottom: 0.6rem;
+      margin-top: 0.1rem;
+      text-shadow: 0 2px 18px #ddd1f31b;
+    }
+    .page-title {
+      text-align: center;
+      color: #8b6adf;
+      font-weight: 700;
+      font-size: 1.22rem;
+      letter-spacing: 0.6px;
+      margin-bottom: 1.7rem;
+    }
+    .form-label {
+      font-weight: 600;
+      color: #8561d6;
+      font-size: 1.06rem;
+      letter-spacing: 0.2px;
+      margin-bottom: 0.22rem;
+    }
+    .form-control, .form-select {
+      border-radius: 1.2rem;
+      border: 1.5px solid #ece2fa;
+      background: #f8f5fd;
+      font-size: 1.05rem;
+      padding: 1.02rem 1.1rem;
+      margin-bottom: 1.05rem;
+      font-family: 'Pretendard', Arial, sans-serif;
+      box-shadow: none;
+      transition: border-color .16s, box-shadow .16s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #c0a6e4;
+      background: #fff;
+      box-shadow: 0 0 0 1.2px #bbbefa33;
+    }
+    .login-btn {
+      font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
+      font-weight: 800;
+      font-size: 1.18rem;
+      border-radius: 2rem;
+      padding: 0.98rem;
+      margin-bottom: 0.7rem;
+      background: linear-gradient(90deg, #8d87e3 0%, #c18ef9 100%);
+      border: none;
+      transition: background 0.19s, box-shadow 0.17s, transform 0.13s;
+      box-shadow: 0 4px 24px #a78cfa19;
+      letter-spacing: 1.2px;
+      color: #fff;
+      animation: pulse 1.3s infinite;
+    }
+    @keyframes pulse {
+      0% {box-shadow: 0 4px 24px #a78cfa17;}
+      50% {box-shadow: 0 7px 34px #d1a2fa25;}
+      100% {box-shadow: 0 4px 24px #a78cfa17;}
+    }
+    .login-btn:hover {
+      background: linear-gradient(90deg, #c18ef9 0%, #8d87e3 100%);
+      color: #fff;
+      transform: scale(1.02);
+      box-shadow: 0 10px 34px 0 #cfbcf729;
+    }
+    .sub-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      font-size: 1.02rem;
+    }
+    .sub-actions a {
+      color: #a57cd3;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+      letter-spacing: 0.6px;
+    }
+    .sub-actions a:hover {
+      color: #6352b6;
+      text-decoration: underline;
+    }
+    .login-footer {
+      text-align: center;
+      margin-top: 2.2rem;
+      color: #bbb;
+      font-size: 1.02rem;
+      letter-spacing: 0.19px;
+    }
+    .back-link {
+      color: #a57cd3;
+      font-size: 1.14rem;
+      text-decoration: none;
+      transition: color 0.2s;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      font-weight: 600;
+      margin-left: 0.1rem;
+    }
+    .back-link:hover {
+      color: #7c4de7;
+      text-decoration: underline;
+    }
+    /* ✅ 학부 선택 전 학과 비활성화 느낌 */
+    .is-disabled-select {
+      opacity: 0.75;
+    }
+    @media (max-width: 600px) {
+      .login-card { max-width: 97vw; padding: 1.1rem 0.6rem 0.9rem 0.6rem; }
+      .brand-title { font-size: 1.3rem; }
     }
   </style>
 </head>
-<body>
 
-  <div class="form-box">
-    <div class="form-title">회원가입</div>
-    <form action="/signup" method="post">
-      <div class="mb-3">
+<body>
+  <div id="particles-js"></div>
+
+  <div class="login-card animate__animated animate__fadeInDown">
+    <a href="/login" class="back-link animate__animated animate__fadeInLeft">&lt; 돌아가기</a>
+
+    <div class="brand-title animate__animated animate__fadeIn">DSU School Matcher</div>
+    <div class="page-title">회원가입</div>
+
+    <!-- ✅ 너 기존 action 유지: /signup -->
+    <form action="/signup" method="post" autocomplete="on">
+      <div class="mb-2">
         <label for="userId" class="form-label">아이디</label>
-        <input type="text" id="userId" name="userId" class="form-control" required>
+        <input type="text" id="userId" name="userId" class="form-control" required placeholder="아이디를 입력하세요" autocomplete="username">
       </div>
-      <div class="mb-3">
+
+      <div class="mb-2">
         <label for="password" class="form-label">비밀번호</label>
-        <input type="password" id="password" name="password" class="form-control" required>
+        <input type="password" id="password" name="password" class="form-control" required placeholder="비밀번호를 입력하세요" autocomplete="new-password">
       </div>
-      <div class="mb-3">
+
+      <div class="mb-2">
         <label for="name" class="form-label">이름</label>
-        <input type="text" id="name" name="name" class="form-control" required>
+        <input type="text" id="name" name="name" class="form-control" required placeholder="이름을 입력하세요" autocomplete="name">
       </div>
-      <div class="mb-3">
+
+      <div class="mb-2">
         <label for="birth" class="form-label">생년월일</label>
         <input type="date" id="birth" name="birth" class="form-control" required>
       </div>
-      <div class="mb-3">
+
+      <div class="mb-2">
         <label for="phone" class="form-label">전화번호</label>
-        <input type="text" id="phone" name="phone" class="form-control" required>
+        <input type="text" id="phone" name="phone" class="form-control" required placeholder="010-0000-0000" autocomplete="tel">
       </div>
-      <div class="mb-3">
+
+      <div class="mb-2">
         <label for="gender" class="form-label">성별</label>
         <select id="gender" name="gender" class="form-select" required>
           <option value="">성별을 선택하세요</option>
@@ -71,7 +213,7 @@
       </div>
 
       <!-- 학부 선택 -->
-      <div class="mb-3">
+      <div class="mb-2">
         <label for="department" class="form-label">학부</label>
         <select id="department" name="department" class="form-select" required>
           <option value="">학부를 선택하세요</option>
@@ -88,27 +230,31 @@
       </div>
 
       <!-- 학과 선택 -->
-      <div class="mb-3">
+      <div class="mb-2">
         <label for="major" class="form-label">학과</label>
         <select id="major" name="major" class="form-select" required>
           <option value="">학과를 선택하세요</option>
+
           <optgroup label="입체영화예술대학">
             <option value="영화학과">영화학과</option>
             <option value="뮤지컬연기전공">뮤지컬연기전공</option>
             <option value="디지털영상디자인학과">디지털영상디자인학과</option>
             <option value="연기전공">연기전공</option>
           </optgroup>
+
           <optgroup label="디자인대학">
             <option value="시각디자인학과">시각디자인학과</option>
             <option value="패션디자인학과">패션디자인학과</option>
             <option value="공간환경디자인학과">공간환경디자인학과</option>
           </optgroup>
+
           <optgroup label="미디어콘텐츠대학">
             <option value="방송영상학과">방송영상학과</option>
             <option value="게임학과">게임학과</option>
             <option value="영상애니메이션학과">영상애니메이션학과</option>
             <option value="웹툰학과">웹툰학과</option>
           </optgroup>
+
           <optgroup label="소프트웨어융합대학">
             <option value="디지털융합공학과">디지털융합공학과</option>
             <option value="소프트웨어학과">소프트웨어학과</option>
@@ -117,12 +263,14 @@
             <option value="스마트모빌리티학과">스마트모빌리티학과(신설)</option>
             <option value="건축공학과">건축공학과</option>
           </optgroup>
+
           <optgroup label="글로벌관광대학">
             <option value="호텔경영학과">호텔경영학과</option>
             <option value="글로벌관광학과">글로벌관광학과</option>
             <option value="스포츠재활학과">스포츠재활학과</option>
             <option value="축구학과">축구학과</option>
           </optgroup>
+
           <optgroup label="바이오헬스융합대학">
             <option value="보건행정학과">보건행정학과</option>
             <option value="임상병리학과">임상병리학과</option>
@@ -134,6 +282,7 @@
             <option value="체육학과">체육학과</option>
             <option value="식품영양학과">식품영양학과</option>
           </optgroup>
+
           <optgroup label="미래기술대학">
             <option value="ICT융합공학과">ICT융합공학과</option>
             <option value="안전관리공학과">안전관리공학과</option>
@@ -145,6 +294,7 @@
             <option value="스포츠융합학과">스포츠융합학과</option>
             <option value="창작학과">창작학과</option>
           </optgroup>
+
           <optgroup label="경영사회과학대학">
             <option value="경영학과">경영학과</option>
             <option value="경제금융학과">경제금융학과</option>
@@ -152,24 +302,118 @@
             <option value="사회복지학과">사회복지학과</option>
             <option value="부동산학과">부동산학과</option>
           </optgroup>
+
           <optgroup label="민선교양대학">
             <option value="자유전공학부">자유전공학부(신설)</option>
           </optgroup>
         </select>
       </div>
 
-      <div class="mb-3">
+      <div class="mb-2">
         <label for="schoolYear" class="form-label">학년</label>
-        <input type="number" id="schoolYear" name="schoolYear" min="1" max="5" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label for="studentId" class="form-label">학번</label>
-        <input type="text" id="studentId" name="studentId" class="form-control" required>
+        <input type="number" id="schoolYear" name="schoolYear" min="1" max="5" class="form-control" required placeholder="예: 1">
       </div>
 
-      <button type="submit" class="btn btn-purple">가입하기</button>
+      <div class="mb-2">
+        <label for="studentId" class="form-label">학번</label>
+        <input type="text" id="studentId" name="studentId" class="form-control" required placeholder="학번을 입력하세요">
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 login-btn animate__animated animate__pulse animate__infinite animate__slow">
+        가입하기
+      </button>
+
+      <div class="sub-actions">
+        <a href="/login">로그인</a>
+        <a href="/find-account">아이디·비밀번호 찾기</a>
+      </div>
     </form>
+
+    <div class="login-footer">ⓒ 2025 DSU School Matcher.</div>
   </div>
 
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- particles.js -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // ✅ particles.js 초기화
+      particlesJS("particles-js", {
+        "particles": {
+          "number": { "value": 34, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": ["#c1bbef", "#e5ddfb", "#fff", "#b3a9e6"] },
+          "shape": { "type": "circle" },
+          "opacity": {
+            "value": 0.20,
+            "random": true,
+            "anim": { "enable": true, "speed": 0.6, "opacity_min": 0.1, "sync": false }
+          },
+          "size": {
+            "value": 18,
+            "random": true,
+            "anim": { "enable": false, "speed": 10, "size_min": 7, "sync": false }
+          },
+          "line_linked": { "enable": false },
+          "move": {
+            "enable": true,
+            "speed": 1.2,
+            "direction": "top",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": { "onhover": {"enable": false}, "onclick": {"enable": false}, "resize": true }
+        },
+        "retina_detect": true
+      });
+
+      // ✅ 학부 -> 학과 optgroup 필터링
+      const deptSelect = document.getElementById('department');
+      const majorSelect = document.getElementById('major');
+
+      const allOptgroups = Array.from(majorSelect.querySelectorAll('optgroup'));
+
+      function resetMajorToPlaceholder() {
+        majorSelect.value = "";
+      }
+
+      function setMajorEnabled(enabled) {
+        majorSelect.disabled = !enabled;
+        majorSelect.classList.toggle('is-disabled-select', !enabled);
+      }
+
+      function filterMajorsByDepartment(deptValue) {
+        // 학과 선택 초기화
+        resetMajorToPlaceholder();
+
+        if (!deptValue) {
+          // 학부 미선택: optgroup 전부 숨기고 비활성
+          allOptgroups.forEach(g => g.disabled = true);
+          setMajorEnabled(false);
+          return;
+        }
+
+        // 학부 선택: 해당 label만 활성화
+        allOptgroups.forEach(g => {
+          g.disabled = (g.label !== deptValue);
+        });
+        setMajorEnabled(true);
+      }
+
+      // 초기 상태
+      filterMajorsByDepartment(deptSelect.value);
+
+      // 변경 이벤트
+      deptSelect.addEventListener('change', function() {
+        filterMajorsByDepartment(this.value);
+      });
+    });
+  </script>
 </body>
 </html>
