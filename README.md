@@ -72,10 +72,11 @@ Tools
 - Controller → View 데이터 전달 누락 문제
 👉 자세한 내용은 포트폴리오 내 Troubleshooting 페이지에 정리되어 있습니다.
 
-***
+___
 
-📁 Project Structure
+## 📁 Project Structure
 
+```text
 src
  ├─ main
  │  ├─ java
@@ -84,6 +85,7 @@ src
  │     ├─ templates
  │     └─ static
  └─ test
+
 
 ***
 
