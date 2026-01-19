@@ -1,141 +1,316 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>DSU 랜덤 매칭 프로그램</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <!-- Animate.css -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    integrity="sha512-VI1ZJGz70ZlGznjI9VXvXbldbfGJ5IG+o1hDH3Telo9hkqxZkfNChs5HgKFtZpYKo55zS/aMZ4YMpMm3G8XWZg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"
-  />
-  <!-- AOS -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <!-- Pretendard & Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
-    /* 전체 배경 그라데이션 + particles.js 위치 */
-    body, html {
-      height: 100%;
+    html, body {
+      min-height: 100%;
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      position: relative;
+      font-family: 'Pretendard', 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #e9d0ff 100%);
       overflow-x: hidden;
     }
+
+    /* particles */
     #particles-js {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: 0;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0; left: 0;
+      z-index: 1;
+      pointer-events: none;
     }
-    nav {
+
+    /* 상단 브랜드 */
+    .top-brand {
+      position: fixed;
+      top: 22px;
+      left: 26px;
       z-index: 10;
+      font-weight: 900;
+      font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.90);
+      letter-spacing: 0.8px;
+      text-shadow: 0 10px 24px rgba(0,0,0,0.18);
+      user-select: none;
     }
-    .hero {
+
+    /* 메인 카드(로그인 카드 무드) */
+    .home-card {
+      z-index: 10;
       position: relative;
-      z-index: 10;
-      min-height: 80vh;
-      display: flex;
+      width: min(92vw, 820px);
+      margin: 13vh auto 0 auto;
+      background: rgba(255,255,255,0.97);
+      border-radius: 2.6rem;
+      box-shadow: 0 16px 60px 0 #a48fcd1f, 0 2px 16px #e3b2fb2b;
+      padding: 3.6rem 3.0rem 2.8rem 3.0rem;
+      backdrop-filter: blur(2px);
+      text-align: center;
+      animation: fadein 1s;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(48px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .home-title {
+      font-size: 2.9rem;
+      font-weight: 900;
+      color: #726be5;
+      letter-spacing: 1.0px;
+      text-shadow: 0 2px 18px #ddd1f31b;
+      margin-bottom: 0.9rem;
+      line-height: 1.18;
+    }
+
+    .home-subtitle {
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: #8d79c8;
+      opacity: 0.95;
+      margin-bottom: 2.2rem;
+    }
+
+    /* CTA 버튼(로그인 버튼 무드) */
+    .start-btn {
+      font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
+      font-weight: 900;
+      font-size: 1.22rem;
+      border-radius: 999px;
+      padding: 1.05rem 2.0rem;
+      background: linear-gradient(90deg, #8d87e3 0%, #c18ef9 100%);
+      border: none;
+      transition: background 0.19s, box-shadow 0.17s, transform 0.13s;
+      box-shadow: 0 10px 34px 0 #cfbcf729;
+      letter-spacing: 1.2px;
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
+      gap: 0.55rem;
+      margin: 0.2rem 0 0.9rem 0;
+    }
+    .start-btn:hover {
+      background: linear-gradient(90deg, #c18ef9 0%, #8d87e3 100%);
+      transform: translateY(-1px);
       color: #fff;
     }
-    .hero h1 {
-      font-size: 3rem;
+    .start-btn:active {
+      transform: scale(0.98);
+    }
+    .start-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px #bbbefa55, 0 10px 34px 0 #cfbcf729;
+    }
+
+    /* 보조 버튼(가벼운 기능: 알림 받기) */
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.95rem 1.35rem;
+      border-radius: 999px;
+      border: 1.6px solid #ece2fa;
+      background: #f8f5fd;
+      color: #6d57b6;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform .12s ease, box-shadow .16s ease, opacity .16s ease;
+    }
+    .ghost-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(120, 90, 210, 0.12);
+    }
+    .ghost-btn:active { transform: scale(0.98); }
+
+    /* 기능 카드 3개 */
+    .feature-grid {
+      margin-top: 2.3rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.1rem;
+      text-align: left;
+    }
+    .feature {
+      background: #ffffff;
+      border: 1.2px solid #efe8ff;
+      border-radius: 1.6rem;
+      padding: 1.15rem 1.15rem 1.05rem 1.15rem;
+      box-shadow: 0 10px 22px rgba(120, 90, 210, 0.08);
+      transition: transform .12s ease, box-shadow .16s ease;
+    }
+    .feature:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(120, 90, 210, 0.14);
+    }
+    .feature .icon {
+      font-size: 1.35rem;
+      margin-bottom: 0.55rem;
+    }
+    .feature .title {
+      font-weight: 900;
+      color: #5b49b6;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.2px;
+    }
+    .feature .desc {
+      color: #7b6fae;
       font-weight: 700;
-      text-shadow: 0 0 10px rgba(0,0,0,0.5);
+      font-size: 0.98rem;
+      line-height: 1.4;
     }
-    .hero p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      text-shadow: 0 0 8px rgba(0,0,0,0.3);
+
+    .home-footer {
+      margin-top: 2.2rem;
+      color: #bbb;
+      font-size: 1.02rem;
+      letter-spacing: 0.19px;
     }
-    .btn-match {
-      font-size: 1.25rem;
-      padding: .75rem 2rem;
-      border-radius: 50px;
-      box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
-      transition: transform .2s;
+
+    /* 모바일 */
+    @media (max-width: 800px) {
+      .feature-grid { grid-template-columns: 1fr; }
     }
-    .btn-match:hover {
-      transform: scale(1.05);
-    }
-    footer {
-      position: relative;
-      z-index: 10;
+    @media (max-width: 600px) {
+      .top-brand { font-size: 1.05rem; left: 16px; top: 16px; }
+      .home-card {
+        margin-top: 11vh;
+        padding: 2.2rem 1.3rem 1.9rem 1.3rem;
+        border-radius: 2rem;
+      }
+      .home-title { font-size: 1.85rem; }
+      .home-subtitle { font-size: 1.02rem; margin-bottom: 1.6rem; }
+      .start-btn { font-size: 1.08rem; padding: 0.95rem 1.5rem; }
+      .ghost-btn { font-size: 0.98rem; padding: 0.85rem 1.15rem; }
     }
   </style>
 </head>
-<body>
 
-  <!-- particles.js 배경 -->
+<body>
+  <!-- particles background -->
   <div id="particles-js"></div>
 
-  <!-- 네비게이션 -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-transparent py-3">
-    <div class="container">
-      <a class="navbar-brand fw-bold fs-3 animate__animated animate__fadeInDown" href="#" data-aos="fade-down">
-         F∙M∙P School Matcher
-      </a>
-    </div>
-  </nav>
+  <div class="top-brand animate__animated animate__fadeInDown">
+    F∙M∙P School Matcher
+  </div>
 
-  <!-- 히어로 섹션 -->
-  <section class="hero">
-    <div data-aos="zoom-in" data-aos-duration="1000">
-      <h1 class="animate__animated animate__fadeInUp">DSU 랜덤 매칭 프로그램</h1>
-      <p class="animate__animated animate__fadeInUp animate__delay-1s">
-        한 번의 클릭으로 새로운 친구를 만나보세요!❤️
-      </p>
-      <!-- th:href="@{/match}"  -->
-      <a href="/login"
-   class="btn btn-light btn-match animate__animated animate__pulse animate__infinite animate__slow"
-   data-aos="fade-up" data-aos-delay="500">
-  매칭 시작 🚀
-</a>
-    </div>
-  </section>
+  <main class="home-card animate__animated animate__fadeInDown">
+    <div class="home-title">DSU 랜덤 매칭 프로그램</div>
+    <div class="home-subtitle">한 번의 클릭으로 새로운 친구를 만나보세요! ❤️</div>
 
-  <!-- 푸터 -->
-  <footer class="footer mt-auto py-4">
-    <div class="container text-center text-white-50" data-aos="fade-up" data-aos-delay="800">
-      <small>© 2025 DSU School Matcher.</small>
+    <!-- ✅ 기존 흐름 유지: 로그인으로 이동 -->
+    <a href="/login" class="start-btn">
+      매칭 시작 <span aria-hidden="true">🚀</span>
+    </a>
+
+    <!-- ✅ 가벼운 기능/디자인 추가: 알림(선택) -->
+    <div class="mt-2">
+      <button type="button" class="ghost-btn" id="notifyBtn">
+        알림 받기 <span aria-hidden="true">🔔</span>
+      </button>
     </div>
-  </footer>
+
+    <!-- ✅ 가벼운 “서비스 소개” 카드 (포트폴리오에 있어 보임) -->
+    <section class="feature-grid" aria-label="서비스 특징">
+      <div class="feature">
+        <div class="icon">⚡</div>
+        <div class="title">빠른 매칭</div>
+        <div class="desc">원클릭으로 매칭을 시작하고, 새로운 친구를 만나요.</div>
+      </div>
+      <div class="feature">
+        <div class="icon">🎯</div>
+        <div class="title">학교 기반</div>
+        <div class="desc">학부/학과/학년 정보를 활용해 더 자연스러운 연결을 지원해요.</div>
+      </div>
+      <div class="feature">
+        <div class="icon">💬</div>
+        <div class="title">채팅 연결</div>
+        <div class="desc">매칭 후 바로 대화할 수 있도록 채팅 흐름을 제공해요.</div>
+      </div>
+    </section>
+
+    <div class="home-footer">ⓒ 2025 DSU School Matcher.</div>
+  </main>
 
   <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- particles.js -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <!-- AOS -->
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
   <script>
-    // particles.js 설정
-    particlesJS.load('particles-js', 'https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/assets/particles.json', function() {
-      console.log('particles.js loaded');
+    // ✅ particles 설정(로그인 페이지와 같은 스타일)
+    document.addEventListener('DOMContentLoaded', function() {
+      particlesJS("particles-js", {
+        "particles": {
+          "number": { "value": 34, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": ["#c1bbef", "#e5ddfb", "#fff", "#b3a9e6"] },
+          "shape": { "type": "circle" },
+          "opacity": {
+            "value": 0.20,
+            "random": true,
+            "anim": { "enable": true, "speed": 0.6, "opacity_min": 0.1, "sync": false }
+          },
+          "size": {
+            "value": 18,
+            "random": true,
+            "anim": { "enable": false, "speed": 10, "size_min": 7, "sync": false }
+          },
+          "line_linked": { "enable": false },
+          "move": {
+            "enable": true,
+            "speed": 1.2,
+            "direction": "top",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": { "onhover": {"enable": false}, "onclick": {"enable": false}, "resize": true }
+        },
+        "retina_detect": true
+      });
     });
-    // AOS 초기화
-    AOS.init();
-  </script>
-  <!-- ✅ 브라우저 알림 -->
-  <script>
-    if ("Notification" in window) {
+
+    // ✅ 알림은 "자동 요청" 대신 버튼 클릭 시에만 요청(UX 깔끔)
+    document.getElementById("notifyBtn").addEventListener("click", function () {
+      if (!("Notification" in window)) {
+        alert("이 브라우저는 알림을 지원하지 않아요 😢");
+        return;
+      }
+
       Notification.requestPermission().then(function(permission) {
         if (permission === "granted") {
           new Notification("🎉 환영합니다!", {
-            body: "DSU 랜덤 매칭 프로그램에 오신 걸 환영해요!\n 로그인하고 새로운 친구를 만나요!",
+            body: "DSU 랜덤 매칭 프로그램에 오신 걸 환영해요!\n로그인하고 새로운 친구를 만나요!",
             icon: "https://cdn-icons-png.flaticon.com/512/727/727399.png"
           });
+        } else if (permission === "denied") {
+          alert("알림이 차단되어 있어요. 브라우저 설정에서 허용해 주세요!");
         }
       });
-    }
+    });
   </script>
 </body>
 </html>

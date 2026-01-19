@@ -21,6 +21,7 @@
       font-family: 'Pretendard', 'Montserrat', 'Segoe UI', Arial, sans-serif;
       overflow-x: hidden;
     }
+
     #particles-js {
       position: fixed;
       width: 100vw;
@@ -29,6 +30,7 @@
       z-index: 1;
       pointer-events: none;
     }
+
     .login-card {
       z-index: 10;
       position: relative;
@@ -45,10 +47,12 @@
       display: flex;
       flex-direction: column;
     }
+
     @keyframes fadein {
       from { opacity: 0; transform: translateY(48px);}
       to   { opacity: 1; transform: none;}
     }
+
     .brand-title {
       text-align: center;
       font-size: 2.3rem;
@@ -60,6 +64,7 @@
       margin-top: 0.1rem;
       text-shadow: 0 2px 18px #ddd1f31b;
     }
+
     .form-label {
       font-weight: 600;
       color: #8561d6;
@@ -67,6 +72,7 @@
       letter-spacing: 0.2px;
       margin-bottom: 0.22rem;
     }
+
     .form-control {
       border-radius: 1.2rem;
       border: 1.5px solid #ece2fa;
@@ -78,11 +84,13 @@
       box-shadow: none;
       transition: border-color .16s, box-shadow .16s;
     }
+
     .form-control:focus {
       border-color: #c0a6e4;
       background: #fff;
       box-shadow: 0 0 0 1.2px #bbbefa33;
     }
+
     .login-btn {
       font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
       font-weight: 800;
@@ -98,34 +106,46 @@
       color: #fff;
       animation: pulse 1.3s infinite;
     }
+
     @keyframes pulse {
       0% {box-shadow: 0 4px 24px #a78cfa17;}
       50% {box-shadow: 0 7px 34px #d1a2fa25;}
       100% {box-shadow: 0 4px 24px #a78cfa17;}
     }
+
+    /* hover (살짝만) */
     .login-btn:hover {
       background: linear-gradient(90deg, #c18ef9 0%, #8d87e3 100%);
       color: #fff;
-      transform: scale(1.02);
       box-shadow: 0 10px 34px 0 #cfbcf729;
+      transform: translateY(-1px);
     }
+
+    /* active (눌림) */
+    .login-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 6px 18px 0 #cfbcf729;
+    }
+
+    .login-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px #bbbefa55, 0 10px 34px 0 #cfbcf729;
+    }
+
     .sub-actions {
       display: flex;
       justify-content: space-between;
       margin-top: 1rem;
       font-size: 1.07rem;
     }
+
     .sub-actions a {
       color: #a57cd3;
       text-decoration: none;
-      transition: color 0.2s;
       font-weight: 500;
       letter-spacing: 0.8px;
     }
-    .sub-actions a:hover {
-      color: #6352b6;
-      text-decoration: underline;
-    }
+
     .login-footer {
       text-align: center;
       margin-top: 2.5rem;
@@ -133,23 +153,100 @@
       font-size: 1.02rem;
       letter-spacing: 0.19px;
     }
+
     .back-link {
       color: #a57cd3;
       font-size: 1.14rem;
       text-decoration: none;
-      transition: color 0.2s;
       margin-bottom: 1.8rem;
       display: inline-block;
       font-weight: 600;
       margin-left: 0.1rem;
     }
-    .back-link:hover {
-      color: #7c4de7;
-      text-decoration: underline;
+
+    /* =========================
+       로그인 에러 알림 카드
+    ========================= */
+    .auth-alert{
+      background: #fff1f4;
+      border: 1.5px solid #ffd0db;
+      color: #d24b6a;
+      padding: 0.85rem 1rem;
+      border-radius: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 18px rgba(210, 75, 106, 0.10);
     }
+
+    /* =========================
+       링크 hover 애니메이션
+    ========================= */
+    .sub-actions a,
+    .back-link{
+      position: relative;
+      transition: transform .12s ease, color .18s ease, opacity .18s ease;
+    }
+
+    .sub-actions a:hover,
+    .back-link:hover{
+      transform: translateY(-1px);
+      color: #6352b6;
+    }
+
+    .sub-actions a::after,
+    .back-link::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-6px;
+      width:0%;
+      height:2px;
+      background: currentColor;
+      opacity: .35;
+      transition: width .18s ease;
+    }
+
+    .sub-actions a:hover::after,
+    .back-link:hover::after{
+      width:100%;
+    }
+
+    /* =========================
+       모바일 전용 미세 조정 (한 번만!)
+    ========================= */
     @media (max-width: 600px) {
-      .login-card { max-width: 97vw; padding: 1.1rem 0.2rem 0.7rem 0.2rem; }
-      .brand-title { font-size: 1.13rem; }
+      .login-card {
+        max-width: 94vw;
+        min-width: unset;
+        padding: 1.4rem 1rem 1.2rem 1rem;
+        margin-top: 4.5vh;
+        border-radius: 2rem;
+      }
+
+      .brand-title {
+        font-size: 1.55rem;
+        margin-bottom: 1.6rem;
+      }
+
+      .form-label {
+        font-size: 1rem;
+      }
+
+      .form-control {
+        font-size: 1.02rem;
+        padding: 0.95rem 1rem;
+      }
+
+      .login-btn {
+        font-size: 1.08rem;
+        padding: 0.92rem;
+        border-radius: 1.7rem;
+      }
+
+      .sub-actions {
+        font-size: 0.98rem;
+      }
     }
   </style>
 </head>
@@ -169,12 +266,13 @@
         <label for="password" class="form-label">비밀번호</label>
         <input type="password" class="form-control" id="password" name="password" required placeholder="비밀번호를 입력하세요" autocomplete="current-password">
       </div>
-      <div id="loginError" class="text-danger mb-2" style="display:none;">아이디 또는 비밀번호가 일치하지 않습니다.</div>
+	  <div id="loginError" class="auth-alert" style="display:none;"></div>
       <button type="submit" class="btn btn-primary w-100 login-btn animate__animated animate__pulse animate__infinite animate__slow">로그인</button>
-      <div class="sub-actions">
-        <a href="signup">회원가입</a>
-        <a href="/find-account">비밀번호 찾기</a>
-      </div>
+	  <div class="sub-actions">
+	    <a href="/signup">회원가입</a>
+	    <a href="/find-account">아이디·비밀번호 찾기</a>
+	  </div>
+
     </form>
     <div class="login-footer">
       ⓒ 2025 DSU School Matcher.
@@ -190,10 +288,12 @@
     /*<![CDATA[*/
     document.addEventListener('DOMContentLoaded', function() {
       // 1) 서버에서 받은 error 속성
-      var errorMsg = /*[[${error}]]*/ '';
-      if (errorMsg) {
-        alert(errorMsg);
-      }
+	  var errorMsg = /*[[${error}]]*/ '';
+	  if (errorMsg) {
+	    const box = document.getElementById("loginError");
+	    box.textContent = errorMsg;
+	    box.style.display = "block";
+	  }
 
       // 2) particles.js 초기화
       particlesJS("particles-js", {

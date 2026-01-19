@@ -126,6 +126,18 @@ body{
   font-weight:700;
 }
 
+.auth-alert{
+  background: #fff1f4;
+  border: 1.5px solid #ffd0db;
+  color: #d24b6a;
+  padding: 0.85rem 1rem;
+  border-radius: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 10px 18px rgba(210, 75, 106, 0.10);
+}
+
 .alert{
   background:#fff1f4;
   border:1.5px solid #ffd0db;
@@ -136,3 +148,49 @@ body{
   font-weight: 800;
   text-align:center;
 }
+
+.find-account-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.15;
+}
+
+.find-account-link span:first-child {
+  font-size: 0.95rem;
+}
+
+.find-account-link span:last-child {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.sub-actions a,
+.back-link{
+  position: relative;
+  transition: transform .12s ease, color .18s ease, opacity .18s ease;
+}
+
+.sub-actions a:hover,
+.back-link:hover{
+  transform: translateY(-1px);
+}
+
+.sub-actions a::after,
+.back-link::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-6px;
+  width:0%;
+  height:2px;
+  background: currentColor;
+  opacity: .35;
+  transition: width .18s ease;
+}
+
+.sub-actions a:hover::after,
+.back-link:hover::after{
+  width:100%;
+}
+
