@@ -72,7 +72,7 @@ Tools
 - Controller → View 데이터 전달 누락 문제
 👉 자세한 내용은 포트폴리오 내 Troubleshooting 페이지에 정리되어 있습니다.
 
-___
+***
 
 ## 📁 Project Structure
 
@@ -85,7 +85,7 @@ src
  │     ├─ templates
  │     └─ static
  └─ test
-
+```
 
 ***
 
@@ -105,7 +105,8 @@ src
 - Notion Page
     👉 https://www.notion.so/FMP-2e9b8af24f00805e99fbd6a118de3fc5
 
-ㅡㅡㅡ
+---
+
 
 
 
